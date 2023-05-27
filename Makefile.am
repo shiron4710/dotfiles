@@ -1,10 +1,11 @@
-SUBDIRS = linux macOS global
+distdir = $(PACKAGE_NAME)-$(PACKAGE_VERSION)
+dist_DATA = dist/.zshrc dist/.zprofile
 
-.PHONY: all
-all:
+dist/%: global/zsh/% $(OS_DIR)/zsh/%
+	@mkdir -p $(distdir)/dist
+	cat $^ > $(distdir)/$@
 
-.PHONY: clean
-clean:
+clean-local:
+	-rm -rf $(distdir)
 
-.PHONY: install
-install:
+EXTRA_DIST = $(SOURCES)

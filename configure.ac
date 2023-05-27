@@ -7,4 +7,18 @@ AM_INIT_AUTOMAKE([foreign])
 
 AC_CONFIG_FILES([Makefile])
 
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+AC_CANONICAL_TARGET
+AS_CASE(["${build_os}"],
+[linux*], [
+  OS_DIR="linux"
+],
+[darwin*], [
+  OS_DIR="macOS"
+])
+
+
+AC_SUBST([OS_DIR], [$OS_DIR])
+
 AC_OUTPUT
