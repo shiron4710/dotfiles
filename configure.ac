@@ -7,9 +7,15 @@ AM_INIT_AUTOMAKE([foreign])
 
 AC_CONFIG_FILES([Makefile])
 
+# Checks for stow
+AC_CHECK_PROGS(STOW, [stow], [no])
+
+if test "x$STOW" = "xno"; then
+  AC_MSG_ERROR([Stow is required to install Dotfiles])
+fi
+
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
-AC_CANONICAL_TARGET
 AS_CASE(["${build_os}"],
 [linux*], [
   OS_DIR="linux"

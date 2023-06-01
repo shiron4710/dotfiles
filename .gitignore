@@ -54,3 +54,4 @@ Makefile
 COPYING
 
 dist
+dotfiles-*
