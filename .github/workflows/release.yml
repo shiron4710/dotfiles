@@ -1,25 +1,34 @@
 name: release
 
 on:
-  push:
-    branches:
-      - main
-
-permissions:
-  contents: write
-  pull-requests: write
+  release:
+    types: [published]
 
 jobs:
-  release-please:
+  release:
     runs-on: ubuntu-latest
-    outputs:
-      release-created: ${{ steps.release.outputs.release_created }}
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Release please
-        uses: google-github-actions/release-please-action@v3
-        id: release
+      - name: Set up Autotools environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y automake
+          sudo apt-get install -y autoconf
+      - name: configure
+        run: |
+          aclocal
+          autoconf
+          automake -c -a
+      - name: zip
+        run: |
+          zip ../dotfiles.zip *
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          release-type: simple
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ../dotfiles.zip
+          asset_name: dotfiles.zip
+          asset_content_type: application/zip
