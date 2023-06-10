@@ -3,27 +3,36 @@ on: pull_request
 jobs:
   ci-linux:
     runs-on: ubuntu-latest
-    container: ubuntu:latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3
-      - name: Setup
+      - name: Install zsh
         run: |
-          apt-get update
-          apt-get upgrade
-          apt-get install -y zsh autoconf automake
-          zsh
-          chmod +x ./linux/install-pkg.sh
+          sudo apt-get install -y zsh
+      - name: Install package 1
+        shell: zsh {0}
+        run: |
+          sudo apt-get install -y autoconf automake stow
+      - name: Install package 2
+        shell: zsh {0}
+        run: |
+          sudo chmod +x ./linux/install-pkg.sh
           source ./linux/install-pkg.sh
-      - name: Make
+      - name: automake
+        shell: zsh {0}
         run: |
           aclocal
           autoconf
           automake -a -c
+      - name: make
+        shell: zsh {0}
+        run: |
+          zsh
           ./configure
           make
           make install
       - name: Test
+        shell: zsh {0}
         run: |
           time zsh -i -c exit
   ci-macos:
@@ -31,19 +40,27 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3
-      - name: Setup
+      - name: Install package 1
         run: |
-          zsh
+          brew install zsh autoconf automake stow
+      - name: Install package 2
+        shell: zsh {0}
+        run: |
           chmod +x ./macos/install-pkg.sh
           source ./macos/install-pkg.sh
-      - name: Make
+      - name: automake
+        shell: zsh {0}
         run: |
           aclocal
           autoconf
           automake -a -c
+      - name: make
+        shell: zsh {0}
+        run: |
           ./configure
           make
           make install
       - name: Test
+        shell: zsh {0}
         run: |
           time zsh -i -c exit
