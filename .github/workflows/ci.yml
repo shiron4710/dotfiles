@@ -1,8 +1,49 @@
 on: pull_request
 
 jobs:
-  ci:
+  ci-linux:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    container: ubuntu:latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3
+      - name: Setup
+        run: |
+          apt-get update
+          apt-get upgrade
+          apt-get install -y zsh autoconf automake
+          zsh
+          chmod +x ./linux/install-pkg.sh
+          source ./linux/install-pkg.sh
+      - name: Make
+        run: |
+          aclocal
+          autoconf
+          automake -a -c
+          ./configure
+          make
+          make install
+      - name: Test
+        run: |
+          time zsh -i -c exit
+  ci-macos:
+    runs-on: macos-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup
+        run: |
+          zsh
+          chmod +x ./macos/install-pkg.sh
+          source ./macos/install-pkg.sh
+      - name: Make
+        run: |
+          aclocal
+          autoconf
+          automake -a -c
+          ./configure
+          make
+          make install
+      - name: Test
+        run: |
+          time zsh -i -c exit

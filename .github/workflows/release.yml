@@ -13,9 +13,9 @@ jobs:
           fetch-depth: 0
       - name: Set up Autotools environment
         run: |
-          sudo apt-get update
-          sudo apt-get install -y automake
-          sudo apt-get install -y autoconf
+          apt-get update
+          apt-get install -y automake
+          apt-get install -y autoconf
       - name: configure
         run: |
           aclocal
