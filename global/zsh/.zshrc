@@ -1,0 +1,3 @@
+#!/bin/zsh
+
+# global zsh
